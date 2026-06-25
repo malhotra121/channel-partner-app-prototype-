@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi 2.0 — Channel Partner App (Prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Metronic-style canvas + Webority brand */
+  --primary:#7b1fe0;            /* Webority purple */
+  --primary-d:#6a14c7;
+  --primary-light:#f3eafd;      /* light-primary badge bg */
+  --navy:#0a2540;               /* Webority navy (sidebar) */
+  --navy-2:#13315c;
+  --navy-3:#081c30;
+  --navy-line:#1c3a5e;
+
+  --bg:#f5f8fa;                 /* Metronic page bg */
+  --paper:#f5f8fa;--paper-2:#eef1f6;
+  --card:#ffffff;--surface:#f9fafc;
+  --ink:#181c32;                /* Metronic heading text */
+  --text:#3f4254;              /* Metronic body text */
+  --muted:#7e8299;             /* Metronic muted */
+  --muted-2:#a1a5b7;
+  --line:#eff2f5;              /* Metronic borders */
+  --line-2:#e1e4ea;
+
+  --success:#50cd89;--success-light:#e8fff3;--success-d:#3a9e69;
+  --info:#7239ea;--info-light:#f0e9fc;
+  --warning:#f1bc00;--warning-light:#fff8dd;
+  --danger:#f1416c;--danger-light:#fff0f3;
+  --blue:#009ef7;--blue-light:#e9f6ff;
+  --gold:#f1bc00;
+
+  /* legacy aliases kept so later CSS still resolves */
+  --ink-2:#13315c;--acc:#7b1fe0;--acc-2:#6a14c7;--acc-soft:#f3eafd;
+  --green:#50cd89;--green-soft:#e8fff3;--amber:#f1bc00;--amber-soft:#fff8dd;
+  --red:#f1416c;--red-soft:#fff0f3;--navy-soft:#f3eafd;--gold-2:#d9a800;--gold-soft:#fff8dd;
+  --verify:#50cd89;--verify-d:#3a9e69;--verify-soft:#e8fff3;
+
+  --r:0.65rem;--r-lg:0.85rem;--r-xl:1rem;
+  --sh:0 0 20px 0 rgba(76,87,125,.05);
+  --sh-md:0 0 30px 0 rgba(76,87,125,.10);
+  --sh-lg:0 10px 40px 0 rgba(76,87,125,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.5;font-size:14px}
+h1,h2,h3,h4{font-family:'Inter',sans-serif;font-weight:700;line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
+button{font-family:inherit;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600;font-size:13.5px;padding:10px 18px;border-radius:.6rem;border:none;transition:.15s}
+.btn-pri{background:var(--primary);color:#fff}
+.btn-pri:hover{background:var(--primary-d);box-shadow:0 4px 14px -4px rgba(123,31,224,.5)}
+.btn-ink{background:var(--navy);color:#fff}
+.btn-ink:hover{background:var(--navy-2)}
+.btn-out{background:#fff;color:var(--text);border:1px solid var(--line-2)}
+.btn-out:hover{background:var(--paper-2);color:var(--ink)}
+.btn-sm{padding:8px 13px;font-size:12.5px}
+.btn-amber{background:var(--warning-light);color:#b08800}
+.btn-amber:hover{background:#ffefb0}
+.btn-red{background:var(--danger-light);color:var(--danger)}
+.btn-red:hover{background:#ffe0e7}
+
+.app{display:grid;grid-template-columns:265px 1fr;min-height:100vh}
+.side{background:var(--navy);color:#9aa9c4;display:flex;flex-direction:column;padding:0 16px 20px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:22px 10px 22px;margin-bottom:6px}
+.brand .logo{width:42px;height:42px;border-radius:.65rem;background:var(--primary);display:grid;place-items:center;font-weight:800;color:#fff;font-size:20px}
+.brand b{font-weight:800;color:#fff;font-size:19px;letter-spacing:-.01em;line-height:1}
+.brand small{display:block;font-size:9.5px;color:#7b8db0;letter-spacing:.16em;font-weight:700;margin-top:3px}
+.side-sec{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#5d6f93;font-weight:700;padding:18px 10px 8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:.6rem;color:#9aa9c4;font-weight:600;font-size:14px;transition:.13s;border:none;background:none;width:100%;text-align:left}
+.nav-item .ic{width:20px;text-align:center;font-size:16px;opacity:.7}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.nav-item:hover .ic{opacity:1}
+.nav-item.active{background:var(--primary);color:#fff}
+.nav-item.active .ic{opacity:1;color:#fff}
+.side-foot{margin-top:auto;padding:14px 10px 0;border-top:1px solid rgba(255,255,255,.07);font-size:12px;color:#7b8db0}
+.side-foot .who{display:flex;align-items:center;gap:10px;padding-top:12px}
+.side-foot .av{width:36px;height:36px;border-radius:.6rem;background:var(--primary-light);color:var(--primary);display:grid;place-items:center;font-weight:700;font-size:13px}
+
+.main{padding:0;overflow:auto;height:100vh;background:var(--bg)}
+.topbar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:16px 30px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(76,87,125,.04)}
+.topbar h1{font-size:20px;font-weight:700}
+.topbar .crumb{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:2px}
+.topbar .right{display:flex;align-items:center;gap:12px}
+.modepill{display:inline-flex;background:var(--paper-2);border-radius:.6rem;padding:4px;gap:3px}
+.modepill button{border:none;background:none;padding:7px 16px;border-radius:.5rem;font-weight:600;font-size:12.5px;color:var(--muted);transition:.15s}
+.modepill button.on{background:#fff;color:var(--primary);box-shadow:var(--sh)}
+.content{padding:28px 30px 60px;max-width:1140px}
+
+.screen{display:none}
+.screen.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:24px}
+.kpi{background:var(--card);border:none;border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh);transition:.2s}
+.kpi:hover{box-shadow:var(--sh-md)}
+.kpi .lbl{font-size:13px;color:var(--muted);font-weight:600}
+.kpi .n{font-weight:800;font-size:30px;color:var(--ink);margin-top:8px;line-height:1;letter-spacing:-.02em}
+.kpi .sub{font-size:12px;color:var(--success-d);font-weight:600;margin-top:7px}
+.kpi.amber .n{color:#b08800}
+.kpi.blue .n{color:var(--primary)}
+
+.panel{background:var(--card);border:none;border-radius:var(--r-lg);padding:26px;margin-bottom:22px;box-shadow:var(--sh)}
+.panel h3{font-size:16px;font-weight:700;margin-bottom:3px}
+.panel .desc{font-size:13px;color:var(--muted);margin-bottom:18px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;padding-bottom:16px;border-bottom:1px dashed var(--line-2)}
+.panel-head h3{margin:0}
+
+.pipe{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+.pipe .st{display:flex;align-items:center;gap:9px;flex:1;min-width:120px}
+.pipe .dot{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none;background:var(--paper-2);color:var(--muted-2)}
+.pipe .st.done .dot{background:var(--success-light);color:var(--success-d)}
+.pipe .st.curr .dot{background:var(--primary);color:#fff;box-shadow:0 0 0 4px var(--primary-light)}
+.pipe .st .t{font-size:12.5px;font-weight:600;color:var(--text)}
+.pipe .st.todo .t{color:var(--muted-2)}
+.pipe .bar{height:3px;flex:1;background:var(--line-2);min-width:18px;margin:0 4px;border-radius:3px}
+.pipe .bar.on{background:var(--success)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-2);font-weight:700;padding:0 14px 12px;border-bottom:1px solid var(--line-2)}
+.tbl td{padding:14px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--text)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:.12s}
+.tbl tr:hover td{background:var(--surface)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:.45rem}
+.tag.login{background:var(--blue-light);color:#0084d1}
+.tag.proc{background:var(--warning-light);color:#b08800}
+.tag.sanc{background:var(--success-light);color:var(--success-d)}
+.tag.disb{background:var(--primary-light);color:var(--primary)}
+.tag.pend{background:var(--warning-light);color:#b08800}
+.tag.ok{background:var(--success-light);color:var(--success-d)}
+
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:12.5px;font-weight:600;color:var(--ink)}
+.fld input,.fld select{padding:11px 14px;border:1px solid var(--line-2);border-radius:.6rem;font-family:inherit;font-size:14px;background:var(--surface);color:var(--text);transition:.15s}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px var(--primary-light)}
+.fld .hint{font-size:11.5px;color:var(--muted)}
+.check-row{display:flex;align-items:center;gap:11px;padding:13px 15px;border:1px solid var(--line);border-radius:.6rem;margin-bottom:10px;background:var(--surface);transition:.15s}
+.check-row:hover{background:#fff;box-shadow:var(--sh)}
+.check-row .ic{width:30px;height:30px;border-radius:.5rem;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.check-row .ic.ok{background:var(--success-light);color:var(--success-d)}
+.check-row .ic.run{background:var(--warning-light);color:#b08800}
+.check-row b{font-size:13.5px;color:var(--ink)}
+.check-row p{font-size:12px;color:var(--muted)}
+.check-row .meta{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted)}
+
+.steps{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:.6rem;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted);box-shadow:var(--sh)}
+.step .n{width:23px;height:23px;border-radius:50%;background:var(--paper-2);display:grid;place-items:center;font-size:12px;color:var(--muted-2);font-weight:700}
+.step.done{color:var(--ink)}
+.step.done .n{background:var(--success-light);color:var(--success-d)}
+.step.curr{background:var(--primary);color:#fff;border-color:var(--primary)}
+.step.curr .n{background:rgba(255,255,255,.25);color:#fff}
+
+.row2{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+@media(max-width:980px){.kpis{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}.frm{grid-template-columns:1fr}}
+
+.bars{display:flex;align-items:flex-end;gap:14px;height:170px;padding:10px 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+.bar-col .bv{width:100%;max-width:42px;background:var(--primary);border-radius:.4rem .4rem 0 0;transition:.4s;opacity:.85}
+.bar-col:nth-child(even) .bv{background:var(--primary);opacity:1}
+.bar-col:hover .bv{opacity:1}
+.bar-col .bl{font-size:11.5px;color:var(--muted);font-weight:600}
+
+.muted{color:var(--muted)}
+.notice{background:var(--primary-light);border:none;border-radius:.6rem;padding:13px 16px;font-size:13px;color:#5a17a8;display:flex;gap:10px;align-items:flex-start;margin-bottom:18px}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:14px 24px;border-radius:.6rem;font-weight:600;font-size:13.5px;box-shadow:var(--sh-lg);opacity:0;transition:.3s;z-index:50;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.payout-card{background:var(--navy);color:#fff;border-radius:var(--r-lg);padding:28px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.payout-card::before{content:"";position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(123,31,224,.35)}
+.payout-card .lbl{font-size:13px;color:#9aa9c4;font-weight:500;position:relative}
+.payout-card .amt{font-weight:800;font-size:38px;margin-top:8px;position:relative;color:#fff;letter-spacing:-.02em}
+.payout-card .ro{position:absolute;top:20px;right:22px;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.16);color:#fff;padding:5px 11px;border-radius:.45rem;letter-spacing:.04em}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.split .b{background:var(--surface);border:1px solid var(--line);border-radius:.6rem;padding:17px}
+.split .b .l{font-size:12px;color:var(--muted);font-weight:600}
+.split .b .v{font-weight:800;font-size:22px;color:var(--ink);margin-top:5px}
+.seg{display:inline-flex;background:var(--paper-2);border-radius:.6rem;padding:4px;gap:3px;margin-bottom:18px}
+.seg button{border:none;background:none;padding:8px 16px;border-radius:.5rem;font-weight:600;font-size:13px;color:var(--muted);transition:.15s}
+.seg button.on{background:#fff;color:var(--primary);box-shadow:var(--sh)}
+
+/* ===== RESPONSIVE ===== */
+.menu-btn{display:none;background:var(--navy);color:#fff;border:none;width:42px;height:42px;border-radius:10px;font-size:20px;align-items:center;justify-content:center}
+.side-overlay{display:none}
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:0;width:264px;z-index:60;transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,.7,.2,1)}
+  .side.open{transform:translateX(0)}
+  .side-overlay.show{display:block;position:fixed;inset:0;background:rgba(6,26,46,.5);z-index:55}
+  .menu-btn{display:inline-flex}
+  .topbar{padding:14px 18px}
+  .topbar h1{font-size:20px}
+  .content{padding:20px 18px 60px}
+  .kpis{grid-template-columns:1fr 1fr;gap:12px}
+  .kpi{padding:16px}
+  .kpi .n{font-size:26px}
+  .row2{grid-template-columns:1fr;gap:16px}
+  .frm{grid-template-columns:1fr}
+  .panel{padding:18px}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tbl{min-width:560px}
+  .seg{overflow-x:auto;max-width:100%}
+  .steps{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px}
+  .step{flex:none}
+  .modepill button{padding:7px 13px;font-size:12px}
+  .pipe .st{min-width:96px}
+}
+@media(max-width:480px){
+  .kpis{grid-template-columns:1fr}
+  .panel-head{align-items:flex-start}
+}
+
+
+/* admin action cells + seg tappable on mobile */
+.act{white-space:nowrap;text-align:right}
+.act .btn{margin-bottom:4px}
+@media(max-width:860px){
+  .seg{white-space:nowrap}
+  .seg button{flex:none}
+  .act{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+  .act .btn{width:100%;margin-bottom:0}
+  .panel-head{flex-direction:column;align-items:flex-start;gap:12px}
+  .panel-head .seg{width:100%}
+}
+
+
+/* ===== LEAD DETAIL DRAWER ===== */
+.drawer-overlay{position:fixed;inset:0;background:rgba(6,26,46,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.25s;z-index:70}
+.drawer-overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:440px;max-width:92vw;background:#fff;z-index:80;box-shadow:-24px 0 60px -20px rgba(10,37,64,.4);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.drawer.open{transform:translateX(0)}
+.drawer-head{background:var(--navy);color:#fff;padding:24px 26px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.drawer-head h3{color:#fff;font-size:22px;margin-top:4px}
+.drawer-eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#b89bff;font-weight:700}
+.drawer-x{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:20px;cursor:pointer;flex:none;transition:.15s}
+.drawer-x:hover{background:rgba(255,255,255,.26)}
+.drawer-body{padding:24px 26px;overflow-y:auto;flex:1}
+.ld-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--paper-2);gap:14px}
+.ld-row:last-of-type{border-bottom:none}
+.ld-l{font-size:13px;color:var(--muted);font-weight:600}
+.ld-v{font-size:14px;font-weight:700;color:var(--ink);text-align:right}
+.ld-sec{font-family:'Fraunces';font-weight:600;font-size:15px;color:var(--ink);margin:22px 0 14px;padding-top:8px;border-top:1px solid var(--line)}
+.ld-pipe{display:flex;flex-direction:column;gap:0}
+.ld-step{display:flex;gap:13px;align-items:flex-start;position:relative;padding-bottom:20px}
+.ld-step:last-child{padding-bottom:0}
+.ld-step::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line-2)}
+.ld-step:last-child::before{display:none}
+.ld-step.done::before{background:var(--green)}
+.ld-step .d{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:none;z-index:2;background:var(--paper-2);color:var(--muted-2);border:2px solid var(--line-2)}
+.ld-step.done .d{background:var(--green);color:#fff;border-color:var(--green)}
+.ld-step.curr .d{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 0 0 4px var(--acc-soft)}
+.ld-step .lbl{font-size:14px;font-weight:700;color:var(--text)}
+.ld-step.todo .lbl{color:var(--muted-2)}
+.ld-step .sub{font-size:12px;color:var(--muted)}
+.ld-timeline{display:flex;flex-direction:column;gap:14px}
+.ld-tl{display:flex;gap:11px;font-size:13px}
+.ld-tl .dot{width:9px;height:9px;border-radius:50%;background:var(--acc);margin-top:5px;flex:none}
+.ld-tl b{display:block;color:var(--ink);font-size:13.5px}
+.ld-tl span{color:var(--muted);font-size:12px}
+@media(max-width:560px){.drawer{width:100vw;max-width:100vw}.drawer-head{padding:20px}.drawer-body{padding:20px}}
+
+
+/* ===== MOBILE REFINEMENTS ===== */
+@media(max-width:560px){
+  /* topbar: let it wrap cleanly, toggle on its own line if needed */
+  .topbar{flex-wrap:wrap;gap:10px;padding:12px 16px}
+  .topbar h1{font-size:19px}
+  .topbar .crumb{font-size:11px}
+  .topbar .right{width:100%;justify-content:flex-end}
+  .modepill button{padding:8px 16px;font-size:12.5px}
+
+  /* compact 4-step onboarding stepper that fits without scroll */
+  .steps{gap:6px;flex-wrap:wrap;overflow:visible}
+  .step{flex:1 1 calc(50% - 6px);justify-content:center;padding:9px 8px;font-size:11.5px;min-width:0}
+  .step .n{width:20px;height:20px;font-size:11px}
+
+  /* payout card breathing room + badge placement */
+  .payout-card{padding:22px 20px 24px}
+  .payout-card .ro{position:static;display:inline-block;margin-bottom:10px}
+  .payout-card .amt{font-size:34px}
+
+  /* bigger, comfortable tap targets */
+  .nav-item{padding:13px 13px;font-size:15px}
+  .btn-sm{padding:10px 14px;font-size:13.5px}
+  .seg button{padding:9px 14px}
+  .fld input,.fld select{padding:13px 14px;font-size:15px}
+
+  /* KPI single column already; tighten chart height */
+  .bars{height:140px}
+
+  /* status pipeline wraps to 2 rows neatly on tiny screens */
+  .pipe .st{min-width:calc(50% - 20px)}
+  .pipe .bar{min-width:10px}
+
+  /* drawer rows stack label/value if very tight */
+  .ld-row{flex-wrap:wrap;gap:4px}
+  .ld-v{text-align:left}
+}
+@media(max-width:380px){
+  .step{flex:1 1 100%}
+  .content{padding:16px 14px 56px}
+  .panel{padding:16px}
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="side-overlay" id="sideOverlay" onclick="toggleMenu()"></div>
+  <!-- SIDEBAR -->
+  <aside class="side" id="sidebar">
+    <div class="brand">
+      <span class="logo">S</span>
+      <div><b>Saarthi</b><small>2.0 · CONNECT</small></div>
+    </div>
+
+    <div id="nav-connector">
+      <div class="side-sec">Connector</div>
+      <button class="nav-item active" data-screen="dashboard"><span class="ic">▣</span> Dashboard</button>
+      <button class="nav-item" data-screen="onboarding"><span class="ic">✦</span> Onboarding</button>
+      <button class="nav-item" data-screen="submit"><span class="ic">＋</span> Submit Lead</button>
+      <button class="nav-item" data-screen="leads"><span class="ic">≣</span> My Leads</button>
+      <button class="nav-item" data-screen="payout"><span class="ic">₹</span> Payout</button>
+    </div>
+
+    <div id="nav-admin" style="display:none">
+      <div class="side-sec">Admin</div>
+      <button class="nav-item active" data-screen="adm-review"><span class="ic">▤</span> Onboarding Review</button>
+      <button class="nav-item" data-screen="adm-leads"><span class="ic">≣</span> Lead Governance</button>
+      <button class="nav-item" data-screen="adm-audit"><span class="ic">◷</span> Audit Log</button>
+    </div>
+
+    <div class="side-foot">
+      <div class="who">
+        <span class="av" id="footAv">?</span>
+        <div><div style="color:#fff;font-weight:700;font-size:13px" id="footName">New Connector</div><div id="footRole">Not onboarded</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="menu-btn" onclick="toggleMenu()" aria-label="Menu">☰</button>
+        <div>
+          <div class="crumb" id="crumb">Connector · Dashboard</div>
+          <h1 id="ptitle">Dashboard</h1>
+        </div>
+      </div>
+      <div class="right">
+        <div class="modepill">
+          <button class="on" id="mC" onclick="setMode('connector')">Connector</button>
+          <button id="mA" onclick="setMode('admin')">Admin</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ CONNECTOR: DASHBOARD ============ -->
+      <section class="screen show" id="s-dashboard">
+        <div class="kpis">
+          <div class="kpi"><div class="lbl">Leads this month</div><div class="n" id="kpiLeads">14</div><div class="sub">+3 vs last month</div></div>
+          <div class="kpi blue"><div class="lbl">Under process</div><div class="n">6</div><div class="sub" style="color:var(--muted)">in CRM pipeline</div></div>
+          <div class="kpi"><div class="lbl">Sanctioned</div><div class="n">4</div><div class="sub">₹62.0L value</div></div>
+          <div class="kpi amber"><div class="lbl">Calculated payout</div><div class="n">₹48k</div><div class="sub" style="color:var(--muted)">read-only · uploaded</div></div>
+        </div>
+
+        <div class="row2">
+          <div class="panel">
+            <div class="panel-head"><h3>Month-wise lead activity</h3><span class="tag ok">Live</span></div>
+            <div class="bars">
+              <div class="bar-col"><div class="bv" style="height:40%"></div><div class="bl">Jan</div></div>
+              <div class="bar-col"><div class="bv" style="height:55%"></div><div class="bl">Feb</div></div>
+              <div class="bar-col"><div class="bv" style="height:35%"></div><div class="bl">Mar</div></div>
+              <div class="bar-col"><div class="bv" style="height:70%"></div><div class="bl">Apr</div></div>
+              <div class="bar-col"><div class="bv" style="height:60%"></div><div class="bl">May</div></div>
+              <div class="bar-col"><div class="bv" style="height:90%"></div><div class="bl">Jun</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 style="margin-bottom:14px">Onboarding status</h3>
+            <div id="obStatus">
+              <div class="check-row"><span class="ic run">○</span><div><b>Profile not yet active</b><p>Complete onboarding to activate</p></div><span class="meta" style="color:var(--muted)">Pending</span></div>
+              <div class="check-row"><span class="ic run">○</span><div><b>eKYC &amp; PAN</b><p>Run during onboarding</p></div><span class="meta" style="color:var(--muted)">Pending</span></div>
+              <div class="check-row"><span class="ic run">○</span><div><b>Agreement e-sign</b><p>Sign during onboarding</p></div><span class="meta" style="color:var(--muted)">Pending</span></div>
+            </div>
+            <button class="btn btn-pri btn-sm" style="width:100%;margin-top:10px" id="obStartBtn" onclick="goScreen('onboarding')">Start onboarding →</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Recent leads</h3><button class="btn btn-out btn-sm" onclick="goScreen('leads')">View all →</button></div>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th>Borrower</th><th>Product</th><th>Amount</th><th>Submitted</th><th>Reverse status</th></tr></thead>
+            <tbody id="recentBody">
+              <tr><td><b>Anil Kumar</b></td><td>Home Loan</td><td>₹24,00,000</td><td>22 Jun</td><td><span class="tag sanc">Sanctioned</span></td></tr>
+              <tr><td><b>Meena Reddy</b></td><td>LAP</td><td>₹15,00,000</td><td>20 Jun</td><td><span class="tag proc">Under Process</span></td></tr>
+              <tr><td><b>Suresh P.</b></td><td>Home Loan</td><td>₹38,00,000</td><td>18 Jun</td><td><span class="tag disb">Disbursed</span></td></tr>
+              <tr><td><b>Farah Khan</b></td><td>Personal</td><td>₹6,00,000</td><td>16 Jun</td><td><span class="tag login">Logged-in</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- ============ CONNECTOR: ONBOARDING ============ -->
+      <section class="screen" id="s-onboarding">
+        <div class="steps" id="obSteps">
+          <div class="step curr"><span class="n">1</span> Details &amp; KYC</div>
+          <div class="step"><span class="n">2</span> Auto Checks</div>
+          <div class="step"><span class="n">3</span> E-Sign Agreement</div>
+          <div class="step"><span class="n">4</span> Admin Review</div>
+        </div>
+
+        <div class="row2">
+          <div class="panel">
+            <h3>Partner details &amp; KYC</h3>
+            <div class="desc">A mandatory RM code gates onboarding. Occupation profile options differ for Saarthi vs Power Partner.</div>
+            <div class="frm">
+              <div class="fld"><label>Connector type</label><select id="ob-type"><option>Saarthi</option><option>Power Partner</option></select></div>
+              <div class="fld"><label>Employee (RM) code *</label><input id="ob-rm" placeholder="e.g. RM-4471"><span class="hint">Validated &amp; maps you to an RM</span></div>
+              <div class="fld"><label>Full name *</label><input id="ob-name" placeholder="Your full name"></div>
+              <div class="fld"><label>Mobile *</label><input id="ob-mobile" placeholder="10-digit mobile"></div>
+              <div class="fld"><label>PAN *</label><input id="ob-pan" placeholder="ABCPx1234K"></div>
+              <div class="fld"><label>Aadhaar *</label><input id="ob-aadhaar" placeholder="xxxx-xxxx-xxxx"></div>
+              <div class="fld"><label>Occupation profile</label><select id="ob-occ"><option>DSA — Individual</option><option>Connector — Tier 2</option></select></div>
+              <div class="fld"><label>Bank account (Penny-drop) *</label><input id="ob-bank" placeholder="Account number"></div>
+            </div>
+            <button class="btn btn-pri" style="margin-top:18px" onclick="runChecks()">Run checks &amp; continue →</button>
+          </div>
+
+          <div class="panel">
+            <h3 style="margin-bottom:4px">Automated checks</h3>
+            <div class="desc">Run before review — duplicates blocked; active employees hard-rejected.</div>
+            <div id="checkList">
+              <div class="check-row" data-chk><span class="ic run">○</span><div><b>De-duplication</b><p>Mobile · PAN · Aadhaar</p></div><span class="meta">Waiting</span></div>
+              <div class="check-row" data-chk><span class="ic run">○</span><div><b>eKYC (Aadhaar/PAN)</b><p>Identity validated</p></div><span class="meta">Waiting</span></div>
+              <div class="check-row" data-chk><span class="ic run">○</span><div><b>PeopleStrong (HRMS)</b><p>Not an active employee</p></div><span class="meta">Waiting</span></div>
+              <div class="check-row" data-chk><span class="ic run">○</span><div><b>Bank penny-drop</b><p>Account name match</p></div><span class="meta">Waiting</span></div>
+              <div class="check-row" data-chk><span class="ic run">○</span><div><b>PAN validation</b><p>NSDL lookup</p></div><span class="meta">Waiting</span></div>
+            </div>
+            <button class="btn btn-pri" style="width:100%;margin-top:8px;opacity:.5" id="toEsignBtn" onclick="goScreen('esign')" disabled>Continue to e-sign →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CONNECTOR: E-SIGN ============ -->
+      <section class="screen" id="s-esign">
+        <div class="steps" id="esignSteps">
+          <div class="step done"><span class="n">1</span> Details &amp; KYC</div>
+          <div class="step done"><span class="n">2</span> Auto Checks</div>
+          <div class="step curr"><span class="n">3</span> E-Sign Agreement</div>
+          <div class="step"><span class="n">4</span> Admin Review</div>
+        </div>
+        <div class="row2">
+          <div class="panel">
+            <h3>Engagement letter</h3>
+            <div class="desc">Sign your onboarding agreement via Aadhaar OTP e-sign. Offline upload is available as an alternative path.</div>
+            <div style="background:var(--paper);border:1px dashed var(--line-2);border-radius:12px;padding:20px;font-size:13px;color:var(--muted);height:230px;overflow:auto">
+              <b style="color:var(--ink)">CHANNEL PARTNER ENGAGEMENT AGREEMENT</b><br><br>
+              This agreement is entered into between Saarthi (the "Company") and the Channel Partner named herein, under RM code RM-4471…<br><br>
+              1. The Partner agrees to source borrower leads in accordance with Company policy.<br>
+              2. Payout is calculated per the configured tier and product structure, displayed on a read-only basis.<br>
+              3. The Partner confirms all KYC details are accurate…
+            </div>
+          </div>
+          <div class="panel">
+            <h3 style="margin-bottom:14px">Sign to continue</h3>
+            <div class="fld" style="margin-bottom:14px"><label>Aadhaar OTP</label><input id="ob-otp" placeholder="6-digit OTP — enter any 6 digits to demo"></div>
+            <button class="btn btn-pri" style="width:100%;margin-bottom:10px" onclick="submitOnboarding()">Verify &amp; e-sign</button>
+            <button class="btn btn-out" style="width:100%;margin-bottom:16px">Upload signed copy (offline)</button>
+            <div class="notice"><span>ⓘ</span><div>If digital signing fails, onboarding halts — there's no automatic redirect to offline.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CONNECTOR: SUBMIT LEAD ============ -->
+      <section class="screen" id="s-submit">
+        <div class="panel" style="max-width:720px">
+          <h3>Submit a borrower lead</h3>
+          <div class="desc">Single lead category, no attached documents. Syncs to Go FTR CRM in real time and auto-assigns to your mapped RM. Leads can't be rejected once submitted.</div>
+          <div class="frm">
+            <div class="fld"><label>Borrower name *</label><input id="lf-name" placeholder="Full name"></div>
+            <div class="fld"><label>Mobile *</label><input id="lf-mobile" placeholder="10-digit mobile"></div>
+            <div class="fld"><label>Product *</label><select id="lf-product"><option>Home Loan</option><option>Loan Against Property</option><option>Personal Loan</option><option>Business Loan</option></select></div>
+            <div class="fld"><label>Loan amount *</label><input id="lf-amount" placeholder="₹"></div>
+            <div class="fld"><label>City</label><input id="lf-city" placeholder="City"></div>
+            <div class="fld"><label>Pincode</label><input id="lf-pin" placeholder="6-digit"></div>
+            <div class="fld full"><label>Notes (optional)</label><input id="lf-notes" placeholder="Any context for the RM"></div>
+          </div>
+          <div class="notice" style="margin-top:18px"><span>ⓘ</span><div>On submit, the lead syncs to <b>Go FTR CRM</b> within 5 seconds and is auto-assigned to RM-4471. You'll track reverse status here.</div></div>
+          <button class="btn btn-pri" onclick="submitLead()">Submit lead →</button>
+        </div>
+      </section>
+
+      <!-- ============ CONNECTOR: MY LEADS ============ -->
+      <section class="screen" id="s-leads">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>My leads</h3>
+            <div class="seg"><button class="on" onclick="filterLeads('All',this)">All</button><button onclick="filterLeads('Logged-in',this)">Logged-in</button><button onclick="filterLeads('Under Process',this)">Under Process</button><button onclick="filterLeads('Sanctioned',this)">Sanctioned</button><button onclick="filterLeads('Disbursed',this)">Disbursed</button></div>
+          </div>
+
+          <div style="background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:14px"><b style="font-size:14px">Anil Kumar · Home Loan · ₹24,00,000</b><span class="tag sanc">Sanctioned</span></div>
+            <div class="pipe">
+              <div class="st done"><span class="dot">✓</span><span class="t">Logged-in</span></div><div class="bar on"></div>
+              <div class="st done"><span class="dot">✓</span><span class="t">Under Process</span></div><div class="bar on"></div>
+              <div class="st curr"><span class="dot">●</span><span class="t">Sanctioned</span></div><div class="bar"></div>
+              <div class="st todo"><span class="dot">○</span><span class="t">Disbursed</span></div>
+            </div>
+          </div>
+
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th>Borrower</th><th>Product</th><th>Amount</th><th>RM</th><th>Submitted</th><th>Reverse status</th></tr></thead>
+            <tbody id="leadsBody">
+              <tr data-status="sanc"><td><b>Anil Kumar</b></td><td>Home Loan</td><td>₹24,00,000</td><td>RM-4471</td><td>22 Jun</td><td><span class="tag sanc">Sanctioned</span></td></tr>
+              <tr data-status="proc"><td><b>Meena Reddy</b></td><td>LAP</td><td>₹15,00,000</td><td>RM-4471</td><td>20 Jun</td><td><span class="tag proc">Under Process</span></td></tr>
+              <tr data-status="disb"><td><b>Suresh P.</b></td><td>Home Loan</td><td>₹38,00,000</td><td>RM-4471</td><td>18 Jun</td><td><span class="tag disb">Disbursed</span></td></tr>
+              <tr data-status="login"><td><b>Farah Khan</b></td><td>Personal</td><td>₹6,00,000</td><td>RM-4471</td><td>16 Jun</td><td><span class="tag login">Logged-in</span></td></tr>
+              <tr data-status="proc"><td><b>Vikram J.</b></td><td>Business</td><td>₹50,00,000</td><td>RM-4471</td><td>14 Jun</td><td><span class="tag proc">Under Process</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- ============ CONNECTOR: PAYOUT ============ -->
+      <section class="screen" id="s-payout">
+        <div class="row2">
+          <div class="payout-card">
+            <span class="ro">READ-ONLY</span>
+            <div class="lbl">Calculated payout · June 2026</div>
+            <div class="amt">₹48,250</div>
+            <div style="font-size:12.5px;color:#9fc9c2;margin-top:8px">Figures uploaded by Saarthi. The app does not process transactions — IMD &amp; disbursement stay in the CRM.</div>
+          </div>
+          <div class="panel" style="margin:0">
+            <h3 style="margin-bottom:6px">How yours is calculated</h3>
+            <div class="desc" id="payoutLogic">Saarthi connectors: per-login + per-disbursal amounts by product.</div>
+            <div class="seg"><button class="on" onclick="payoutTier('saarthi',this)">Saarthi</button><button onclick="payoutTier('power',this)">Power Partner</button></div>
+            <div class="split">
+              <div class="b"><div class="l">Per-login</div><div class="v">₹500</div></div>
+              <div class="b"><div class="l">Per-disbursal</div><div class="v">₹2,000</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 style="margin-bottom:14px">Payout breakdown</h3>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th>Borrower</th><th>Product</th><th>Stage</th><th>Basis</th><th>Amount</th></tr></thead>
+            <tbody>
+              <tr><td>Suresh P.</td><td>Home Loan</td><td><span class="tag disb">Disbursed</span></td><td>Per-disbursal</td><td><b>₹2,000</b></td></tr>
+              <tr><td>Anil Kumar</td><td>Home Loan</td><td><span class="tag sanc">Sanctioned</span></td><td>Per-login</td><td><b>₹500</b></td></tr>
+              <tr><td>Farah Khan</td><td>Personal</td><td><span class="tag login">Logged-in</span></td><td>Per-login</td><td><b>₹500</b></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- ============ ADMIN: ONBOARDING REVIEW ============ -->
+      <section class="screen" id="s-adm-review">
+        <div class="kpis">
+          <div class="kpi amber"><div class="lbl">Pending review</div><div class="n" id="kPend">4</div></div>
+          <div class="kpi"><div class="lbl">Approved today</div><div class="n" id="kAppr">8</div></div>
+          <div class="kpi blue"><div class="lbl">Sent back</div><div class="n" id="kSent">2</div></div>
+          <div class="kpi"><div class="lbl">Auto-rejected</div><div class="n" id="kRej">1</div><div class="sub" style="color:var(--muted)">active-employee match</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Onboarding requests</h3><div class="seg" id="revSeg"><button class="on" onclick="filterReview('pending',this)">Pending</button><button onclick="filterReview('approved',this)">Approved</button><button onclick="filterReview('sentback',this)">Sent back</button></div></div>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th>Partner</th><th>Type</th><th>RM code</th><th>Checks</th><th>Submitted</th><th>Action</th></tr></thead>
+            <tbody id="reviewBody">
+              <tr data-state="pending"><td><b>Ravi Sharma</b></td><td>Saarthi</td><td>RM-4471</td><td><span class="tag ok">All pass</span></td><td>12 Jun</td><td class="act"><button class="btn btn-pri btn-sm" onclick="adminAct(this,'approved','Ravi Sharma')">Accept</button> <button class="btn btn-out btn-sm" onclick="adminAct(this,'sentback','Ravi Sharma')">Send back</button></td></tr>
+              <tr data-state="pending"><td><b>Pooja Nair</b></td><td>Power Partner</td><td>RM-2290</td><td><span class="tag ok">All pass</span></td><td>12 Jun</td><td class="act"><button class="btn btn-pri btn-sm" onclick="adminAct(this,'approved','Pooja Nair')">Accept</button> <button class="btn btn-out btn-sm" onclick="adminAct(this,'sentback','Pooja Nair')">Send back</button></td></tr>
+              <tr data-state="pending"><td><b>Imran Q.</b></td><td>Saarthi</td><td>RM-4471</td><td><span class="tag pend">PAN pending</span></td><td>11 Jun</td><td class="act"><button class="btn btn-pri btn-sm" onclick="adminAct(this,'approved','Imran Q.')">Accept</button> <button class="btn btn-red btn-sm" onclick="adminAct(this,'rejected','Imran Q.')">Reject</button></td></tr>
+              <tr data-state="pending"><td><b>Deepa M.</b></td><td>Power Partner</td><td>RM-7781</td><td><span class="tag ok">All pass</span></td><td>10 Jun</td><td class="act"><button class="btn btn-pri btn-sm" onclick="adminAct(this,'approved','Deepa M.')">Accept</button> <button class="btn btn-out btn-sm" onclick="adminAct(this,'sentback','Deepa M.')">Send back</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- ============ ADMIN: LEAD GOVERNANCE ============ -->
+      <section class="screen" id="s-adm-leads">
+        <div class="notice"><span>ⓘ</span><div>Lead assignment &amp; processing happen in <b>Go FTR CRM</b>. This view is for reference and re-assignment governance only.</div></div>
+        <div class="panel">
+          <div class="panel-head"><h3>Submitted leads · auto-assignment</h3><span class="tag ok">Synced to Go FTR</span></div>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th>Borrower</th><th>Connector</th><th>Mapped RM</th><th>Assignment</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><b>Anil Kumar</b></td><td>Ravi Sharma</td><td>RM-4471</td><td><span class="tag ok">Auto-assigned</span></td><td><span class="tag sanc">Sanctioned</span></td><td class="act"><button class="btn btn-out btn-sm" onclick="viewLead(this,'Anil Kumar')">View</button></td></tr>
+              <tr><td><b>Meena Reddy</b></td><td>Ravi Sharma</td><td>RM-4471 <span class="muted">(inactive)</span></td><td><span class="tag pend">→ Branch Head</span></td><td><span class="tag proc">Under Process</span></td><td class="act"><button class="btn btn-amber btn-sm" onclick="reassign(this)">Re-assign</button></td></tr>
+              <tr><td><b>Vikram J.</b></td><td>Pooja Nair</td><td>RM-2290</td><td><span class="tag ok">Auto-assigned</span></td><td><span class="tag proc">Under Process</span></td><td class="act"><button class="btn btn-out btn-sm" onclick="viewLead(this,'Vikram J.')">View</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- ============ ADMIN: AUDIT LOG ============ -->
+      <section class="screen" id="s-adm-audit">
+        <div class="panel">
+          <div class="panel-head"><h3>Audit log</h3><div class="seg" id="auditSeg"><button class="on" onclick="filterAudit('all',this)">All</button><button onclick="filterAudit('onboarding',this)">Onboarding</button><button onclick="filterAudit('leads',this)">Leads</button></div></div>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>Before → After</th></tr></thead>
+            <tbody id="auditBody">
+              <tr data-type="onboarding"><td class="muted">12 Jun 14:02</td><td>Admin · Neha</td><td><span class="tag ok">Approved</span></td><td>Ravi Sharma</td><td>Pending → Active</td></tr>
+              <tr data-type="onboarding"><td class="muted">12 Jun 11:20</td><td>System</td><td><span class="tag pend">Auto-check</span></td><td>Imran Q.</td><td>— → PAN pending</td></tr>
+              <tr data-type="onboarding"><td class="muted">11 Jun 17:45</td><td>Admin · Neha</td><td><span class="tag proc">Sent back</span></td><td>Deepa M.</td><td>Pending → Correction</td></tr>
+              <tr data-type="leads"><td class="muted">11 Jun 10:30</td><td>System</td><td><span class="tag login">Lead sync</span></td><td>Anil Kumar</td><td>— → Go FTR</td></tr>
+              <tr data-type="onboarding"><td class="muted">11 Jun 09:10</td><td>System</td><td><span class="tag" style="background:var(--red-soft);color:#9a2d27">Hard-reject</span></td><td>Anon (HRMS match)</td><td>— → Rejected</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- LEAD DETAIL DRAWER -->
+<div class="drawer-overlay" id="leadOverlay" onclick="closeLead()"></div>
+<aside class="drawer" id="leadDrawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-eyebrow">Lead detail · Go FTR CRM</div>
+      <h3 id="ld-name">—</h3>
+    </div>
+    <button class="drawer-x" onclick="closeLead()" aria-label="Close">×</button>
+  </div>
+  <div class="drawer-body">
+    <div class="ld-row"><span class="ld-l">Product</span><span class="ld-v" id="ld-product">—</span></div>
+    <div class="ld-row"><span class="ld-l">Loan amount</span><span class="ld-v" id="ld-amount">—</span></div>
+    <div class="ld-row"><span class="ld-l">Mobile</span><span class="ld-v" id="ld-mobile">—</span></div>
+    <div class="ld-row"><span class="ld-l">Connector</span><span class="ld-v" id="ld-connector">—</span></div>
+    <div class="ld-row"><span class="ld-l">Mapped RM</span><span class="ld-v" id="ld-rm">—</span></div>
+    <div class="ld-row"><span class="ld-l">Assignment</span><span class="ld-v" id="ld-assign">—</span></div>
+    <div class="ld-row"><span class="ld-l">Submitted</span><span class="ld-v" id="ld-date">—</span></div>
+
+    <div class="ld-sec">Reverse status journey</div>
+    <div class="ld-pipe" id="ld-pipe"></div>
+
+    <div class="ld-sec">Activity timeline</div>
+    <div class="ld-timeline" id="ld-timeline"></div>
+
+    <div class="notice" style="margin-top:18px"><span>ⓘ</span><div>Lead processing &amp; assignment happen in <b>Go FTR CRM</b>. This is a read-only governance view.</div></div>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var titles={
+  dashboard:["Connector · Dashboard","Dashboard"],
+  onboarding:["Connector · Onboarding","Onboarding"],
+  esign:["Connector · Onboarding","E-Sign Agreement"],
+  submit:["Connector · Submit Lead","Submit Lead"],
+  leads:["Connector · My Leads","My Leads"],
+  payout:["Connector · Payout","Payout"],
+  "adm-review":["Admin · Onboarding Review","Onboarding Review"],
+  "adm-leads":["Admin · Lead Governance","Lead Governance"],
+  "adm-audit":["Admin · Audit Log","Audit Log"]
+};
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+  var el=document.getElementById('s-'+id); if(el) el.classList.add('show');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.screen===id));
+  if(titles[id]){document.getElementById('crumb').textContent=titles[id][0];document.getElementById('ptitle').textContent=titles[id][1];}
+  var s=document.getElementById('sidebar'); if(s&&s.classList.contains('open')){s.classList.remove('open');document.getElementById('sideOverlay').classList.remove('show');}
+  document.querySelector('.main').scrollTo({top:0,behavior:'smooth'});
+}
+// ===== ONBOARDING STATE =====
+var profile={ onboarded:false, approved:false, name:'New Connector', rm:'', type:'Saarthi', initials:'?' };
+function initials(name){var p=name.trim().split(/\s+/);return ((p[0]||'')[0]||'')+((p[1]||'')[0]||'')||'?';}
+
+function setMode(m){
+  var con=m==='connector';
+  document.getElementById('nav-connector').style.display=con?'block':'none';
+  document.getElementById('nav-admin').style.display=con?'none':'block';
+  document.getElementById('mC').classList.toggle('on',con);
+  document.getElementById('mA').classList.toggle('on',!con);
+  if(con){ renderProfile(); }
+  else { document.getElementById('footAv').textContent='NB';
+         document.getElementById('footName').textContent='Neha Bhatt';
+         document.getElementById('footRole').textContent='Admin · Checker'; }
+  goScreen(con?'dashboard':'adm-review');
+  if(!con){var pb=document.querySelector('#revSeg button');if(pb)applyReviewFilter('pending');}
+}
+function renderProfile(){
+  document.getElementById('footAv').textContent=profile.initials.toUpperCase();
+  document.getElementById('footName').textContent=profile.name;
+  var role = !profile.onboarded ? 'Not onboarded'
+           : (profile.approved ? (profile.type+' Connector') : 'Pending admin review');
+  document.getElementById('footRole').textContent=role;
+}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+
+function setSteps(id, doneCount, currIndex){
+  var steps=document.querySelectorAll('#'+id+' .step');
+  steps.forEach(function(s,i){
+    s.classList.remove('done','curr');
+    if(i<doneCount) s.classList.add('done');
+    else if(i===currIndex) s.classList.add('curr');
+  });
+}
+
+// Step 1->2: validate details, run the automated checks live
+function runChecks(){
+  var name=val('ob-name'), rm=val('ob-rm'), mobile=val('ob-mobile'), pan=val('ob-pan'), aadhaar=val('ob-aadhaar'), bank=val('ob-bank');
+  if(!name||!rm||!mobile||!pan||!aadhaar||!bank){ toast('Please fill all required (*) fields, including the RM code.'); return; }
+  // carry details forward
+  profile.name=name; profile.rm=rm; profile.type=document.getElementById('ob-type').value; profile.initials=initials(name);
+  // advance stepper to Auto Checks
+  setSteps('obSteps', 2, 2);
+  // animate checks passing one by one
+  var rows=document.querySelectorAll('#checkList [data-chk]');
+  var labels=['Unique','Pass','Pass','Verified','Pass'];
+  rows.forEach(function(r,i){
+    setTimeout(function(){
+      r.querySelector('.ic').className='ic ok'; r.querySelector('.ic').textContent='✓';
+      var m=r.querySelector('.meta'); m.textContent=labels[i]; m.style.color='var(--success-d)';
+      if(i===rows.length-1){
+        var btn=document.getElementById('toEsignBtn'); btn.disabled=false; btn.style.opacity='1';
+        toast('✓ All checks passed. Continue to e-sign.');
+      }
+    }, 350*(i+1));
+  });
+}
+
+// Step 3->done: verify OTP, complete onboarding, update profile everywhere
+function submitOnboarding(){
+  var otp=(val('ob-otp')||'').replace(/\D/g,'');
+  if(otp.length<6){ toast('Enter the 6-digit Aadhaar OTP to e-sign.'); return; }
+  profile.onboarded=true;     // e-sign complete
+  profile.approved=false;     // but still awaiting admin review
+  // sidebar profile updates (shows pending until admin approves)
+  renderProfile();
+  // dashboard onboarding-status: signed, now awaiting admin review
+  var today=todayLabel()+' 2026';
+  document.getElementById('obStatus').innerHTML=
+    '<div class="check-row"><span class="ic ok">✓</span><div><b>Details &amp; KYC</b><p>Submitted with RM code '+profile.rm+'</p></div><span class="meta" style="color:var(--success-d)">Done</span></div>'+
+    '<div class="check-row"><span class="ic ok">✓</span><div><b>eKYC &amp; PAN</b><p>Aadhaar + PAN validated</p></div><span class="meta" style="color:var(--success-d)">Pass</span></div>'+
+    '<div class="check-row"><span class="ic ok">✓</span><div><b>Agreement e-signed</b><p>Aadhaar OTP · '+today+'</p></div><span class="meta" style="color:var(--success-d)">Signed</span></div>'+
+    '<div class="check-row"><span class="ic run">⏳</span><div><b>Admin review</b><p>Request sent to Admin Panel</p></div><span class="meta" style="color:var(--warning)">Pending</span></div>';
+  var sb=document.getElementById('obStartBtn'); if(sb) sb.style.display='none';
+  setSteps('obSteps', 3, 3);
+  setSteps('esignSteps', 3, 3);
+  // ADD this partner to the Admin → Onboarding Review queue as Pending
+  addToReviewQueue(profile.name, profile.type, profile.rm);
+  toast('✓ E-signed. Your onboarding request has been sent to Admin for review.');
+  goScreen('dashboard');
+}
+function addToReviewQueue(name, type, rm){
+  var rb=document.getElementById('reviewBody'); if(!rb) return;
+  var tr=document.createElement('tr');
+  tr.setAttribute('data-state','pending');
+  tr.innerHTML='<td><b>'+name+'</b></td><td>'+type+'</td><td>'+rm+'</td>'+
+    '<td><span class="tag ok">All pass</span></td><td>'+todayLabel()+'</td>'+
+    '<td class="act"><button class="btn btn-pri btn-sm" onclick="adminAct(this,\'approved\',\''+name+'\')">Accept</button> '+
+    '<button class="btn btn-out btn-sm" onclick="adminAct(this,\'sentback\',\''+name+'\')">Send back</button></td>';
+  rb.insertBefore(tr, rb.firstChild);
+  bump('kPend',1);   // Pending review count goes up
+}
+function val(id){var e=document.getElementById(id);return e?(e.value||'').trim():'';}
+
+function toggleMenu(){
+  var s=document.getElementById('sidebar'), o=document.getElementById('sideOverlay');
+  var open=s.classList.toggle('open'); o.classList.toggle('show',open);
+}
+document.querySelectorAll('.nav-item').forEach(n=>n.addEventListener('click',()=>goScreen(n.dataset.screen)));
+function fmtAmt(v){
+  var n=(''+v).replace(/[^0-9]/g,'');
+  if(!n) return '₹—';
+  // Indian grouping
+  var x=n; var last3=x.slice(-3); var rest=x.slice(0,-3);
+  if(rest) last3=','+last3;
+  rest=rest.replace(/\B(?=(\d{2})+(?!\d))/g,',');
+  return '₹'+rest+last3;
+}
+var monthsShort=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function todayLabel(){var d=new Date();return d.getDate()+' '+monthsShort[d.getMonth()];}
+
+function submitLead(){
+  var name=(document.getElementById('lf-name').value||'').trim();
+  var mobile=(document.getElementById('lf-mobile').value||'').trim();
+  var product=document.getElementById('lf-product').value;
+  var amount=(document.getElementById('lf-amount').value||'').trim();
+  if(!name||!mobile||!amount){ toast('Please fill borrower name, mobile and amount.'); return; }
+
+  var amtTxt=fmtAmt(amount);
+  var when=todayLabel();
+
+  // prepend to My Leads (status: Logged-in)
+  var lb=document.getElementById('leadsBody');
+  var tr=document.createElement('tr');
+  tr.setAttribute('data-status','login');
+  tr.innerHTML='<td><b>'+name+'</b></td><td>'+product+'</td><td>'+amtTxt+'</td><td>RM-4471</td><td>'+when+'</td><td><span class="tag login">Logged-in</span></td>';
+  lb.insertBefore(tr, lb.firstChild);
+
+  // prepend to dashboard Recent leads (max 5 rows kept)
+  var rb=document.getElementById('recentBody');
+  if(rb){
+    var rtr=document.createElement('tr');
+    rtr.innerHTML='<td><b>'+name+'</b></td><td>'+product+'</td><td>'+amtTxt+'</td><td>'+when+'</td><td><span class="tag login">Logged-in</span></td>';
+    rb.insertBefore(rtr, rb.firstChild);
+    while(rb.children.length>5) rb.removeChild(rb.lastChild);
+  }
+
+  // bump KPI
+  var k=document.getElementById('kpiLeads'); if(k){ k.textContent=(parseInt(k.textContent||'0',10)+1); }
+
+  // reset form
+  ['lf-name','lf-mobile','lf-amount','lf-city','lf-pin','lf-notes'].forEach(function(i){var el=document.getElementById(i);if(el)el.value='';});
+
+  toast('✓ Lead for '+name+' submitted & synced to Go FTR CRM · auto-assigned to RM-4471');
+  goScreen('leads');
+}
+
+// My Leads status filter
+function filterLeads(status, btn){
+  document.querySelectorAll('#s-leads .seg button').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var map={'All':null,'Logged-in':'login','Under Process':'proc','Sanctioned':'sanc','Disbursed':'disb'};
+  var want=map[status];
+  document.querySelectorAll('#leadsBody tr').forEach(function(tr){
+    if(!want){tr.style.display='';return;}
+    var tag=tr.querySelector('.tag');
+    var has=tag && tag.classList.contains(want);
+    tr.style.display=has?'':'none';
+  });
+}
+var stateLabel={approved:'Active',sentback:'Sent back',rejected:'Rejected'};
+var stateTag={approved:'sanc',sentback:'proc',rejected:'pend'};
+var stateWord={approved:'approved',sentback:'sent back',rejected:'rejected'};
+function adminAct(btn,action,name){
+  var tr=btn.closest('tr');
+  tr.setAttribute('data-state', action);
+  // swap action cell for a status badge
+  var cell=tr.querySelector('.act');
+  var tagClass = action==='approved'?'tag sanc' : action==='rejected'?'tag pend' : 'tag proc';
+  cell.innerHTML='<span class="'+tagClass+'">'+stateLabel[action]+'</span>';
+  // update KPIs
+  bump('kPend',-1);
+  if(action==='approved') bump('kAppr',1);
+  if(action==='sentback') bump('kSent',1);
+  if(action==='rejected') bump('kRej',1);
+  // add audit entry
+  var ab=document.getElementById('auditBody');
+  if(ab){
+    var atr=document.createElement('tr');atr.setAttribute('data-type','onboarding');
+    var t=new Date();var hh=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);
+    atr.innerHTML='<td class="muted">'+todayLabel()+' '+hh+'</td><td>Admin · Neha</td><td><span class="'+tagClass+'">'+stateLabel[action]+'</span></td><td>'+name+'</td><td>Pending → '+stateLabel[action]+'</td>';
+    ab.insertBefore(atr, ab.firstChild);
+  }
+  // respect current filter
+  var active=document.querySelector('#revSeg button.on');
+  if(active){ var f=active.textContent.toLowerCase().replace(' ',''); applyReviewFilter(f); }
+  // if this is the partner who just onboarded, reflect the admin decision back on the connector side
+  if(profile.onboarded && name===profile.name){
+    if(action==='approved'){ profile.approved=true; activateConnectorProfile(); }
+    else if(action==='rejected'){ profile.approved=false; }
+  }
+  toast('✓ '+name+' — onboarding '+stateWord[action]+'. Recorded to audit log.');
+}
+function activateConnectorProfile(){
+  renderProfile();
+  var st=document.getElementById('obStatus'); if(!st) return;
+  var today=todayLabel()+' 2026';
+  st.innerHTML=
+    '<div class="check-row"><span class="ic ok">✓</span><div><b>Profile active</b><p>RM code '+profile.rm+' · approved by Admin</p></div><span class="meta" style="color:var(--success-d)">Active</span></div>'+
+    '<div class="check-row"><span class="ic ok">✓</span><div><b>eKYC &amp; PAN</b><p>Aadhaar + PAN validated</p></div><span class="meta" style="color:var(--success-d)">Done</span></div>'+
+    '<div class="check-row"><span class="ic ok">✓</span><div><b>Agreement e-signed</b><p>Aadhaar OTP · '+today+'</p></div><span class="meta" style="color:var(--success-d)">Signed</span></div>';
+  setSteps('obSteps', 4, -1);
+  setSteps('esignSteps', 4, -1);
+}
+function bump(id,d){var e=document.getElementById(id);if(e)e.textContent=Math.max(0,parseInt(e.textContent||'0',10)+d);}
+
+function applyReviewFilter(state){
+  document.querySelectorAll('#reviewBody tr').forEach(function(tr){
+    var s=tr.getAttribute('data-state');
+    var show = state==='pending' ? s==='pending' : state==='approved' ? s==='approved' : (s==='sentback'||s==='rejected');
+    tr.style.display=show?'':'none';
+  });
+}
+function filterReview(state,btn){
+  document.querySelectorAll('#revSeg button').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  applyReviewFilter(state);
+}
+function filterAudit(type,btn){
+  document.querySelectorAll('#auditSeg button').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.querySelectorAll('#auditBody tr').forEach(function(tr){
+    tr.style.display=(type==='all'||tr.getAttribute('data-type')===type)?'':'none';
+  });
+}
+function reassign(b){b.textContent='Re-assigned ✓';b.classList.remove('btn-amber');b.classList.add('btn-out');b.disabled=true;b.style.opacity='.7';toast('✓ Surfaced to Branch Head for re-assignment.');}
+var LEAD_DATA={
+  'Anil Kumar':{product:'Home Loan',amount:'₹24,00,000',mobile:'98xxxxxx10',connector:'Ravi Sharma',rm:'RM-4471',assign:'Auto-assigned',date:'22 Jun 2026',stage:'Sanctioned',
+    timeline:[['Lead submitted','22 Jun · by Ravi Sharma'],['Synced to Go FTR CRM','22 Jun · 4s'],['Auto-assigned to RM-4471','22 Jun'],['Logged-in','23 Jun'],['Under Process','24 Jun'],['Sanctioned','24 Jun · ₹24,00,000']]},
+  'Meena Reddy':{product:'Loan Against Property',amount:'₹15,00,000',mobile:'97xxxxxx55',connector:'Ravi Sharma',rm:'RM-4471 (inactive)',assign:'→ Branch Head',date:'20 Jun 2026',stage:'Under Process',
+    timeline:[['Lead submitted','20 Jun · by Ravi Sharma'],['Synced to Go FTR CRM','20 Jun · 3s'],['Mapped RM inactive — surfaced to Branch Head','20 Jun'],['Logged-in','21 Jun'],['Under Process','23 Jun']]},
+  'Vikram J.':{product:'Business Loan',amount:'₹50,00,000',mobile:'99xxxxxx72',connector:'Pooja Nair',rm:'RM-2290',assign:'Auto-assigned',date:'14 Jun 2026',stage:'Under Process',
+    timeline:[['Lead submitted','14 Jun · by Pooja Nair'],['Synced to Go FTR CRM','14 Jun · 5s'],['Auto-assigned to RM-2290','14 Jun'],['Logged-in','15 Jun'],['Under Process','18 Jun']]}
+};
+var STAGES=['Logged-in','Under Process','Sanctioned','Disbursed'];
+function viewLead(b,name){
+  var d=LEAD_DATA[name]; if(!d){toast('Lead detail unavailable.');return;}
+  document.getElementById('ld-name').textContent=name;
+  document.getElementById('ld-product').textContent=d.product;
+  document.getElementById('ld-amount').textContent=d.amount;
+  document.getElementById('ld-mobile').textContent=d.mobile;
+  document.getElementById('ld-connector').textContent=d.connector;
+  document.getElementById('ld-rm').textContent=d.rm;
+  document.getElementById('ld-assign').textContent=d.assign;
+  document.getElementById('ld-date').textContent=d.date;
+  // pipeline
+  var ci=STAGES.indexOf(d.stage);
+  var pipe=document.getElementById('ld-pipe');pipe.innerHTML='';
+  STAGES.forEach(function(s,i){
+    var cls = i<ci?'done':(i===ci?'curr':'todo');
+    var icon = i<ci?'✓':(i===ci?'●':(i+1));
+    var sub = i<ci?'Completed':(i===ci?'Current stage':'Pending');
+    pipe.innerHTML+='<div class="ld-step '+cls+'"><span class="d">'+icon+'</span><div><div class="lbl">'+s+'</div><div class="sub">'+sub+'</div></div></div>';
+  });
+  // timeline
+  var tl=document.getElementById('ld-timeline');tl.innerHTML='';
+  d.timeline.slice().reverse().forEach(function(t){
+    tl.innerHTML+='<div class="ld-tl"><span class="dot"></span><div><b>'+t[0]+'</b><span>'+t[1]+'</span></div></div>';
+  });
+  document.getElementById('leadDrawer').classList.add('open');
+  document.getElementById('leadDrawer').setAttribute('aria-hidden','false');
+  document.getElementById('leadOverlay').classList.add('show');
+}
+function closeLead(){
+  document.getElementById('leadDrawer').classList.remove('open');
+  document.getElementById('leadDrawer').setAttribute('aria-hidden','true');
+  document.getElementById('leadOverlay').classList.remove('show');
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLead();});
+function payoutTier(t,btn){
+  document.querySelectorAll('#s-payout .seg button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');
+  var split=document.querySelector('#s-payout .split');var logic=document.getElementById('payoutLogic');
+  if(t==='power'){logic.textContent='Power Partner connectors: percentage commission on disbursal, based on loan amount.';
+    split.innerHTML='<div class="b"><div class="l">Commission rate</div><div class="v">0.45%</div></div><div class="b"><div class="l">On</div><div class="v">Disbursal</div></div>';}
+  else{logic.textContent='Saarthi connectors: per-login + per-disbursal amounts by product.';
+    split.innerHTML='<div class="b"><div class="l">Per-login</div><div class="v">₹500</div></div><div class="b"><div class="l">Per-disbursal</div><div class="v">₹2,000</div></div>';}
+}
+</script>
+</body>
+</html>
